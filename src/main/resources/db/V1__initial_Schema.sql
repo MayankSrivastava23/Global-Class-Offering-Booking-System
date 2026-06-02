@@ -1,0 +1,72 @@
+CREATE TABLE teachers (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    timezone VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE parents (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    timezone VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE TABLE courses (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE TABLE offerings (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    teacher_id BIGINT NOT NULL,
+    course_id BIGINT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+
+    CONSTRAINT fk_offering_teacher
+        FOREIGN KEY (teacher_id)
+        REFERENCES teachers(id),
+
+    CONSTRAINT fk_offering_course
+        FOREIGN KEY (course_id)
+        REFERENCES courses(id)
+);
+
+CREATE TABLE sessions (
+    id BIGSERIAL PRIMARY KEY,
+    offering_id BIGINT NOT NULL,
+    start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    end_time TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+
+    CONSTRAINT fk_session_offering
+        FOREIGN KEY (offering_id)
+        REFERENCES offerings(id)
+);
+
+CREATE TABLE bookings (
+    id BIGSERIAL PRIMARY KEY,
+    parent_id BIGINT NOT NULL,
+    offering_id BIGINT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+
+    CONSTRAINT fk_booking_parent
+        FOREIGN KEY (parent_id)
+        REFERENCES parents(id),
+
+    CONSTRAINT fk_booking_offering
+        FOREIGN KEY (offering_id)
+        REFERENCES offerings(id),
+
+    CONSTRAINT uk_parent_offering
+        UNIQUE(parent_id, offering_id)
+);
