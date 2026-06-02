@@ -10,39 +10,41 @@ The system supports:
 * Offering Management
 * Session Scheduling
 * Parent Bookings
-* Timezone Conversion
 * Booking Conflict Detection
+* Timezone Conversion
 * Concurrent Booking Handling
 * Exception Handling
 * Database Migration using Flyway
 
+The application is designed with clean architecture principles, proper database normalization, transaction management, and production-ready backend practices.
+
 ---
 
-## Tech Stack
+# Tech Stack
 
-### Backend
+## Backend
 
 * Java 21
 * Spring Boot 3
 * Spring Data JPA
-* Hibernate
+* Hibernate ORM
 
-### Database
+## Database
 
 * PostgreSQL
 
-### Build Tool
+## Build Tool
 
 * Maven
 
-### Other Libraries
+## Additional Libraries
 
 * Lombok
 * Flyway Migration
 
 ---
 
-## Project Structure
+# Project Structure
 
 ```text
 src
@@ -50,53 +52,17 @@ src
 │   ├── java
 │   │   └── com.undoschool.global_class_booking_system
 │   │       ├── controller
-│   │       │   ├── TeacherController
-│   │       │   ├── ParentController
-│   │       │   └── OfferingController
-│   │       │
 │   │       ├── service
-│   │       │   ├── BookingService
-│   │       │   ├── OfferingService
-│   │       │   └── SessionService
-│   │       │
 │   │       ├── service.impl
-│   │       │   ├── BookingServiceImpl
-│   │       │   ├── OfferingServiceImpl
-│   │       │   └── SessionServiceImpl
-│   │       │
 │   │       ├── repository
-│   │       │   ├── BookingRepository
-│   │       │   ├── CourseRepository
-│   │       │   ├── OfferingRepository
-│   │       │   ├── ParentRepository
-│   │       │   ├── SessionRepository
-│   │       │   └── TeacherRepository
-│   │       │
 │   │       ├── entity
-│   │       │   ├── BaseEntity
-│   │       │   ├── Teacher
-│   │       │   ├── Parent
-│   │       │   ├── Course
-│   │       │   ├── Offering
-│   │       │   ├── Session
-│   │       │   └── Booking
-│   │       │
 │   │       ├── dto
 │   │       │   ├── request
 │   │       │   └── response
-│   │       │
 │   │       ├── mapper
-│   │       │   └── OfferingMapper
-│   │       │
 │   │       ├── exception
-│   │       │   ├── ResourceNotFoundException
-│   │       │   ├── BookingConflictException
-│   │       │   └── GlobalExceptionHandler
-│   │       │
-│   │       └── util
-│   │           ├── BookingConflictUtil
-│   │           ├── SessionValidationUtil
-│   │           └── TimezoneUtil
+│   │       ├── util
+│   │       └── GlobalClassBookingSystemApplication
 │   │
 │   └── resources
 │       ├── application.properties
@@ -106,112 +72,113 @@ src
 │               ├── V2__create_indexes.sql
 │               └── V3__seed_data.sql
 │
-└── pom.xml
+├── postman_collection.json
+├── README.md
+├── pom.xml
+└── .gitignore
 ```
 
 ---
 
-## Database Schema
+# Database Schema Overview
 
-### Teachers
+## Teachers
 
-```sql
-teachers
---------
-id
-name
-timezone
-created_at
-updated_at
-```
-
-### Parents
-
-```sql
-parents
---------
-id
-name
-timezone
-created_at
-updated_at
-```
-
-### Courses
-
-```sql
-courses
---------
-id
-title
-description
-created_at
-updated_at
-```
-
-### Offerings
-
-```sql
-offerings
----------
-id
-name
-teacher_id
-course_id
-created_at
-updated_at
-```
-
-### Sessions
-
-```sql
-sessions
---------
-id
-offering_id
-start_time
-end_time
-created_at
-updated_at
-```
-
-### Bookings
-
-```sql
-bookings
---------
-id
-parent_id
-offering_id
-created_at
-updated_at
-```
+| Column     | Type      |
+| ---------- | --------- |
+| id         | BIGINT    |
+| name       | VARCHAR   |
+| timezone   | VARCHAR   |
+| created_at | TIMESTAMP |
+| updated_at | TIMESTAMP |
 
 ---
 
-## API Endpoints
+## Parents
 
-### Teacher APIs
+| Column     | Type      |
+| ---------- | --------- |
+| id         | BIGINT    |
+| name       | VARCHAR   |
+| timezone   | VARCHAR   |
+| created_at | TIMESTAMP |
+| updated_at | TIMESTAMP |
 
-#### Create Course
+---
+
+## Courses
+
+| Column      | Type      |
+| ----------- | --------- |
+| id          | BIGINT    |
+| title       | VARCHAR   |
+| description | TEXT      |
+| created_at  | TIMESTAMP |
+| updated_at  | TIMESTAMP |
+
+---
+
+## Offerings
+
+| Column     | Type      |
+| ---------- | --------- |
+| id         | BIGINT    |
+| name       | VARCHAR   |
+| teacher_id | BIGINT    |
+| course_id  | BIGINT    |
+| created_at | TIMESTAMP |
+| updated_at | TIMESTAMP |
+
+---
+
+## Sessions
+
+| Column      | Type                     |
+| ----------- | ------------------------ |
+| id          | BIGINT                   |
+| offering_id | BIGINT                   |
+| start_time  | TIMESTAMP WITH TIME ZONE |
+| end_time    | TIMESTAMP WITH TIME ZONE |
+| created_at  | TIMESTAMP                |
+| updated_at  | TIMESTAMP                |
+
+---
+
+## Bookings
+
+| Column      | Type      |
+| ----------- | --------- |
+| id          | BIGINT    |
+| parent_id   | BIGINT    |
+| offering_id | BIGINT    |
+| created_at  | TIMESTAMP |
+| updated_at  | TIMESTAMP |
+
+---
+
+# API Documentation
+
+## Teacher APIs
+
+### Create Course
 
 ```http
 POST /api/teachers/courses
 ```
 
-#### Create Offering
+### Create Offering
 
 ```http
 POST /api/teachers/offerings
 ```
 
-#### Add Sessions
+### Add Sessions
 
 ```http
 POST /api/teachers/offerings/{offeringId}/sessions
 ```
 
-#### Get Teacher Offerings
+### Get Teacher Offerings
 
 ```http
 GET /api/teachers/{teacherId}/offerings
@@ -219,21 +186,21 @@ GET /api/teachers/{teacherId}/offerings
 
 ---
 
-### Parent APIs
+## Parent APIs
 
-#### Get Available Offerings
+### Get Available Offerings
 
 ```http
 GET /api/parents/offerings
 ```
 
-#### Book Offering
+### Book Offering
 
 ```http
 POST /api/parents/bookings
 ```
 
-#### Get Parent Bookings
+### Get Parent Bookings
 
 ```http
 GET /api/parents/{parentId}/bookings
@@ -241,9 +208,9 @@ GET /api/parents/{parentId}/bookings
 
 ---
 
-### Offering APIs
+## Offering APIs
 
-#### Get Offering Details
+### Get Offering Details
 
 ```http
 GET /api/offerings/{id}
@@ -251,7 +218,67 @@ GET /api/offerings/{id}
 
 ---
 
-## Timezone Handling
+# Environment Variables
+
+Update the following values in:
+
+```properties
+src/main/resources/application.properties
+```
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5434/class_booking_db
+spring.datasource.username=postgres
+spring.datasource.password=root
+```
+
+---
+
+# Setup Instructions
+
+## Clone Repository
+
+```bash
+git clone <repository-url>
+```
+
+## Navigate to Project
+
+```bash
+cd global-class-booking-system
+```
+
+## Create Database
+
+```sql
+CREATE DATABASE class_booking_db;
+```
+
+## Run Flyway Migrations
+
+Flyway migrations execute automatically during application startup.
+
+## Build Project
+
+```bash
+mvn clean install
+```
+
+## Run Application
+
+```bash
+mvn spring-boot:run
+```
+
+Application will start on:
+
+```text
+http://localhost:8080
+```
+
+---
+
+# Timezone Handling Approach
 
 Teachers create sessions in their local timezone.
 
@@ -266,44 +293,47 @@ Asia/Kolkata
 Session:
 
 ```text
-06-Jun-2026
-06:00 PM IST
+06-Jun-2026 06:00 PM IST
 ```
 
-Stored in database:
+The system converts all session times to UTC before storing them in the database.
 
-```text
-UTC Instant
-```
-
-When parents view schedules:
-
-```text
-America/New_York
-```
-
-The session time is automatically converted into the parent's local timezone.
-
----
-
-## Booking Conflict Detection
-
-A parent cannot book overlapping offerings.
+When parents view offerings, session times are converted from UTC into the parent's timezone.
 
 Example:
 
-Booked:
-
 ```text
-Saturday
-5:00 PM - 6:00 PM
+Parent Timezone: America/New_York
 ```
 
-Trying to Book:
+This ensures accurate scheduling across countries and regions.
+
+---
+
+# Booking Conflict Detection
+
+Parents book entire offerings rather than individual sessions.
+
+Before creating a booking:
+
+1. Existing bookings of the parent are loaded.
+2. All sessions belonging to booked offerings are fetched.
+3. Sessions of the new offering are fetched.
+4. Every session is checked for overlap.
+5. If any overlap exists, booking is rejected.
+
+Example:
+
+Existing Session:
 
 ```text
-Saturday
-5:30 PM - 6:30 PM
+Saturday 5:00 PM - 6:00 PM
+```
+
+New Session:
+
+```text
+Saturday 5:30 PM - 6:30 PM
 ```
 
 Result:
@@ -314,26 +344,32 @@ Booking Conflict Detected
 
 ---
 
-## Concurrency Handling
+# Concurrency Handling Approach
 
-To avoid race conditions:
+The application uses:
 
 ```java
 @Transactional
 ```
 
-and database locking are used.
+for transactional consistency.
 
-Features:
+Additional safeguards:
 
-* Prevent duplicate bookings
-* Prevent overlapping bookings
-* Maintain data consistency
-* Support concurrent requests
+* Database unique constraints
+* Parent booking locking
+* Conflict validation before insert
+* Atomic booking creation
+
+This prevents:
+
+* Duplicate bookings
+* Race conditions
+* Inconsistent booking data
 
 ---
 
-## Exception Handling
+# Exception Handling
 
 Implemented using:
 
@@ -358,99 +394,76 @@ Standard Error Response:
 
 ---
 
-## Flyway Migrations
+# Flyway Database Migrations
 
-### V1
+## V1__create_tables.sql
 
-Create Tables
+Creates:
 
-### V2
+* teachers
+* parents
+* courses
+* offerings
+* sessions
+* bookings
 
-Create Indexes
+## V2__create_indexes.sql
 
-### V3
+Creates indexes for:
 
-Seed Initial Data
+* bookings(parent_id)
+* bookings(offering_id)
+* sessions(offering_id)
+* sessions(start_time)
 
-```sql
+## V3__seed_data.sql
+
+Seeds initial records:
+
 Teacher:
-John Doe
-
-Parent:
-Mary Smith
-```
-
----
-
-## Environment Variables
-
-Update in application.properties
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5434/class_booking_db
-spring.datasource.username=postgres
-spring.datasource.password=root
-```
-
----
-
-## Steps to Run
-
-### Clone Repository
-
-```bash
-git clone <repository-url>
-```
-
-### Navigate
-
-```bash
-cd global-class-booking-system
-```
-
-### Build
-
-```bash
-mvn clean install
-```
-
-### Run
-
-```bash
-mvn spring-boot:run
-```
-
-Application starts on:
 
 ```text
-http://localhost:8080
+John Doe
+Asia/Kolkata
+```
+
+Parent:
+
+```text
+Mary Smith
+America/New_York
 ```
 
 ---
 
-## Assumptions
+# Assumptions Made
 
-* Parent books entire offering.
-* Sessions cannot overlap for the same parent.
-* All session times are stored in UTC.
-* Teacher and Parent timezones are valid IANA timezone IDs.
-* One booking corresponds to one offering.
+* Parents book an entire offering.
+* Sessions belong to exactly one offering.
+* Teachers and parents have valid timezone identifiers.
+* All timestamps are stored in UTC.
+* A parent cannot book overlapping sessions.
+* A parent cannot book the same offering twice.
 
 ---
 
-## Future Improvements
+# Optional Enhancements
+
+Potential future improvements:
 
 * JWT Authentication
-* Role Based Access Control
+* Role-Based Access Control
 * Swagger/OpenAPI Documentation
 * Docker Support
-* Unit Testing
-* Integration Testing
+* Unit Tests
+* Integration Tests
 * CI/CD Pipeline
+* Caching
 
 ---
 
-## Author
+# Author
 
 Mayank Srivastava
-Backend Engineer Assignment Submission
+
+Backend Engineering Assignment Submission
